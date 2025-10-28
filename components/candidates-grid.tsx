@@ -3,13 +3,12 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2 } from "lucide-react"
-import type { Candidate } from "@/app/page"
+import { ContractCandidate } from "@/types"
 import Image from "next/image"
 
 interface CandidatesGridProps {
-  candidates: Candidate[]
-  onVote: (candidate: Candidate) => void
+  candidates: any[]
+  onVote: (candidate: ContractCandidate) => void
   isConnected: boolean
 }
 
@@ -23,30 +22,36 @@ export function CandidatesGrid({ candidates, onVote, isConnected }: CandidatesGr
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {candidates.map((candidate) => (
-          <Card key={candidate.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <Card key={String(candidate.id)} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="relative h-64 bg-muted">
-              <Image src={candidate.image || "/placeholder.svg"} alt={candidate.name} fill className="object-cover" />
+              <Image 
+                src={candidate.imageUrl || "/placeholder.svg"} 
+                alt={candidate.name} 
+                fill 
+                className="object-cover" 
+              />
               <div className="absolute top-4 right-4">
-                <Badge className="bg-primary text-primary-foreground">{candidate.votes} votos</Badge>
+                <Badge className="bg-primary text-primary-foreground">
+                  {candidate.formattedVoteCount || Number(candidate.voteCount)} votos
+                </Badge>
               </div>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
                 <h3 className="text-2xl font-bold text-foreground">{candidate.name}</h3>
-                <p className="text-sm text-muted-foreground">{candidate.party}</p>
+                {candidate.votePercentage !== undefined && (
+                  <p className="text-sm text-primary font-semibold">
+                    {candidate.votePercentage.toFixed(2)}% dos votos
+                  </p>
+                )}
               </div>
 
               <div className="space-y-3">
-                <p className="text-sm font-semibold text-foreground">Propostas de Governo:</p>
-                <ul className="space-y-2">
-                  {candidate.proposals.map((proposal, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="leading-relaxed">{proposal}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-sm font-semibold text-foreground">Descrição:</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {candidate.description}
+                </p>
               </div>
 
               <Button onClick={() => onVote(candidate)} className="w-full" size="lg" disabled={!isConnected}>

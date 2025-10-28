@@ -1,17 +1,19 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Wallet, ExternalLink } from "lucide-react"
+import { Wallet, ExternalLink, LogOut } from "lucide-react"
 
 interface HeaderProps {
   isConnected: boolean
   walletAddress: string
   onConnect: () => void
+  onDisconnect?: () => void
+  isConnecting?: boolean
 }
 
-export function Header({ isConnected, walletAddress, onConnect }: HeaderProps) {
-  const contractAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-  const etherscanUrl = `https://etherscan.io/address/${contractAddress}`
+export function Header({ isConnected, walletAddress, onConnect, onDisconnect, isConnecting }: HeaderProps) {
+  const contractAddress = "0xe0B39B86C4DAF03B3CB3396A5C75F29d8b8d7c1d"
+  const etherscanUrl = `https://sepolia.etherscan.io/address/${contractAddress}`
 
   return (
     <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
@@ -59,17 +61,28 @@ export function Header({ isConnected, walletAddress, onConnect }: HeaderProps) {
             </Button>
 
             {isConnected ? (
-              <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-sm font-mono text-foreground hidden sm:inline">
-                  {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                </span>
-                <span className="text-sm font-mono text-foreground sm:hidden">Conectado</span>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-sm font-mono text-foreground hidden sm:inline">
+                    {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                  </span>
+                  <span className="text-sm font-mono text-foreground sm:hidden">Conectado</span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={onDisconnect}
+                  className="gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Desconectar</span>
+                </Button>
               </div>
             ) : (
-              <Button onClick={onConnect} className="gap-2">
+              <Button onClick={onConnect} className="gap-2" disabled={isConnecting}>
                 <Wallet className="w-4 h-4" />
-                Conectar Carteira
+                {isConnecting ? 'Conectando...' : 'Conectar Carteira'}
               </Button>
             )}
           </div>

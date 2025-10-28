@@ -1,157 +1,175 @@
 "use client"
 
-import { useState } from "react"
-import { Header } from "@/components/header"
-import { MetricsSection } from "@/components/metrics-section"
-import { CandidatesGrid } from "@/components/candidates-grid"
-import { RankingSection } from "@/components/ranking-section"
-import { VoteConfirmationModal } from "@/components/vote-confirmation-modal"
-import { toast } from "sonner"
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { injected } from 'wagmi/connectors';
+import { useGetAllCandidates } from '@/hooks/useGetAllCandidates';
+import { useGetVotingStatistics } from '@/hooks/useGetVotingStatistics';
+import { useVote } from '@/hooks/useVote';
+import { useVotingEligibility } from '@/hooks/useVotingEligibility';
+import { useCandidatesWithFormatted } from '@/hooks/useCandidatesWithFormatted';
+import { useWatchVoteCast } from '@/hooks/useWatchVoteCast';
+import { useState, useEffect } from 'react';
+import { toast } from "sonner";
+import { Header } from "@/components/header";
+import { MetricsSection } from "@/components/metrics-section";
+import { CandidatesGrid } from "@/components/candidates-grid";
+import { RankingSection } from "@/components/ranking-section";
+import { VoteConfirmationModal } from "@/components/vote-confirmation-modal";
 
-export type Candidate = {
-  id: number
-  name: string
-  party: string
-  image: string
-  votes: number
-  proposals: string[]
-}
+import { ContractCandidate, UICandidate } from '@/types';
 
 export default function Home() {
-  const [isConnected, setIsConnected] = useState(false)
-  const [walletAddress, setWalletAddress] = useState("")
-  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { address, isConnected, isConnecting } = useAccount();
+  const { connect, error: connectError } = useConnect();
+  const { disconnect } = useDisconnect();
+  
+  const walletAddress = address ? address.toString() : "";
+  
+  const { data: candidates, isLoading: candidatesLoading, refetch: refetchCandidates } = useGetAllCandidates();
+  const { data: votingStats, refetch: refetchStats } = useGetVotingStatistics();
+  const { vote, isPending, isConfirming, isSuccess } = useVote();
+  const { data: formattedCandidates, refetch: refetchFormatted } = useCandidatesWithFormatted();
+  const eligibility = useVotingEligibility(walletAddress);
+  
+  const [selectedCandidate, setSelectedCandidate] = useState<ContractCandidate | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasShownConnectionToast, setHasShownConnectionToast] = useState(false);
 
-  const [candidates, setCandidates] = useState<Candidate[]>([
-    {
-      id: 1,
-      name: "Ana Silva",
-      party: "Partido Progressista",
-      image: "/professional-woman-politician.jpg",
-      votes: 1250,
-      proposals: [
-        "Investimento em educação digital e tecnologia nas escolas",
-        "Programa de incentivo à energia renovável",
-        "Criação de hub de inovação e startups",
-        "Transparência total com blockchain em gastos públicos",
-        "Modernização do transporte público com veículos elétricos",
-      ],
-    },
-    {
-      id: 2,
-      name: "Carlos Mendes",
-      party: "Partido da Inovação",
-      image: "/professional-man-politician.jpg",
-      votes: 980,
-      proposals: [
-        "Implementação de governo digital descentralizado",
-        "Programa de capacitação em blockchain e Web3",
-        "Incentivos fiscais para empresas de tecnologia",
-        "Criação de fundo de investimento em criptomoedas",
-        "Regulamentação clara para ativos digitais",
-      ],
-    },
-    {
-      id: 3,
-      name: "Marina Costa",
-      party: "Partido Sustentável",
-      image: "/professional-woman-leader.png",
-      votes: 1420,
-      proposals: [
-        "Tokenização de créditos de carbono",
-        "Plataforma blockchain para rastreamento ambiental",
-        "Incentivo à agricultura sustentável com NFTs",
-        "Programa de reciclagem com recompensas em tokens",
-        "Preservação de áreas verdes com DAOs comunitárias",
-      ],
-    },
-    {
-      id: 4,
-      name: "Roberto Alves",
-      party: "Partido Digital",
-      image: "/professional-executive-man.png",
-      votes: 1105,
-      proposals: [
-        "Identidade digital descentralizada para todos",
-        "Sistema de saúde integrado via blockchain",
-        "Votação eletrônica 100% transparente",
-        "Programa de inclusão digital universal",
-        "Smart contracts para contratos públicos",
-      ],
-    },
-  ])
-
-  const totalVotes = candidates.reduce((sum, c) => sum + c.votes, 0)
-  const totalRaised = totalVotes * 0.025
-
-  const connectWallet = async () => {
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        })
-        setWalletAddress(accounts[0])
-        setIsConnected(true)
-        toast.success("Carteira conectada com sucesso!")
-      } catch (error) {
-        toast.error("Erro ao conectar carteira")
-        console.error(error)
-      }
-    } else {
-      toast.error("MetaMask não detectada. Por favor, instale a extensão.")
+  // Mostrar mensagem quando conectar com sucesso
+  useEffect(() => {
+    if (isConnected && address && !hasShownConnectionToast) {
+      toast.success("Carteira conectada com sucesso!");
+      setHasShownConnectionToast(true);
     }
-  }
+    
+    // Reset quando desconectar
+    if (!isConnected && hasShownConnectionToast) {
+      setHasShownConnectionToast(false);
+    }
+  }, [isConnected, address, hasShownConnectionToast]);
 
-  const handleVoteClick = (candidate: Candidate) => {
+  const connectWallet = () => {
+    // Verifica se MetaMask está instalado
+    if (typeof window.ethereum === 'undefined') {
+      toast.error("MetaMask não detectado. Por favor, instale o MetaMask!");
+      return;
+    }
+
+    connect({ connector: injected() });
+  };
+
+  // Tratar erros de conexão
+  useEffect(() => {
+    if (connectError) {
+      console.error("Erro de conexão:", connectError);
+      toast.error("Erro ao conectar carteira. Verifique se o MetaMask está desbloqueado.");
+    }
+  }, [connectError]);
+
+  const handleDisconnect = () => {
+    disconnect();
+  };
+
+  const handleVoteClick = (candidate: ContractCandidate) => {
     if (!isConnected) {
-      toast.error("Conecte sua carteira para votar")
-      return
+      toast.error("Conecte sua carteira para votar");
+      return;
     }
-    setSelectedCandidate(candidate)
-    setIsModalOpen(true)
-  }
+    
+    if (!eligibility.canVote) {
+      toast.error(eligibility.message);
+      return;
+    }
+    
+    setSelectedCandidate(candidate);
+    setIsModalOpen(true);
+  };
 
   const handleConfirmVote = async () => {
-    if (!selectedCandidate) return
+    if (!selectedCandidate) return;
 
     try {
-      // Simulação de transação blockchain
-      toast.loading("Processando transação...", { id: "vote-tx" })
-
-      // Simular delay de transação
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Atualizar votos
-      setCandidates((prev) => prev.map((c) => (c.id === selectedCandidate.id ? { ...c, votes: c.votes + 1 } : c)))
-
-      toast.success(`Voto confirmado para ${selectedCandidate.name}!`, { id: "vote-tx" })
-      setIsModalOpen(false)
-      setSelectedCandidate(null)
+      toast.loading("Processando transação na blockchain...", { id: "vote-tx" });
+      vote(Number(selectedCandidate.id));
+      setIsModalOpen(false);
+      setSelectedCandidate(null);
     } catch (error) {
-      toast.error("Erro ao processar voto", { id: "vote-tx" })
-      console.error(error)
+      toast.error("Erro ao processar voto", { id: "vote-tx" });
+      console.error(error);
     }
+  };
+
+  // Watch for vote cast events
+  useWatchVoteCast(() => {
+    // Refetch data when a vote is cast
+    refetchCandidates();
+    refetchStats();
+    refetchFormatted();
+  });
+
+  // Update UI when transaction is confirmed
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Voto confirmado na blockchain!", { id: "vote-tx" });
+      // Refetch após confirmação
+      refetchCandidates();
+      refetchStats();
+      refetchFormatted();
+    } else if (isConfirming) {
+      toast.loading("Confirmando transação na blockchain...", { id: "vote-tx" });
+    }
+  }, [isSuccess, isConfirming, refetchCandidates, refetchStats, refetchFormatted]);
+
+  if (candidatesLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <p className="text-lg">Carregando dados da blockchain...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Header isConnected={isConnected} walletAddress={walletAddress} onConnect={connectWallet} />
+      <Header 
+        isConnected={isConnected} 
+        walletAddress={walletAddress} 
+        onConnect={connectWallet} 
+        onDisconnect={handleDisconnect}
+        isConnecting={isConnecting}
+      />
 
       <main className="container mx-auto px-4 py-8 space-y-12">
-        <MetricsSection totalVotes={totalVotes} totalRaised={totalRaised} />
+        <MetricsSection 
+          totalVotes={votingStats ? Number(votingStats.totalVotes) : 0} 
+          totalRaised={votingStats ? Number(votingStats.totalFunds) / 1e18 : 0} 
+        />
 
-        <CandidatesGrid candidates={candidates} onVote={handleVoteClick} isConnected={isConnected} />
+        {formattedCandidates && (
+          <CandidatesGrid 
+            candidates={formattedCandidates} 
+            onVote={handleVoteClick} 
+            isConnected={isConnected} 
+          />
+        )}
 
-        <RankingSection candidates={candidates} />
+        {formattedCandidates && <RankingSection candidates={formattedCandidates} />}
       </main>
 
       <VoteConfirmationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmVote}
-        candidate={selectedCandidate}
+        candidate={selectedCandidate ? {
+          ...selectedCandidate,
+          name: selectedCandidate.name,
+          image: selectedCandidate.imageUrl,
+          votes: Number(selectedCandidate.voteCount)
+        } : null}
+        isPending={isPending}
       />
     </div>
-  )
+  );
 }

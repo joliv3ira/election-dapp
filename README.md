@@ -1,30 +1,87 @@
-# Voting dApp UI
+# VoteChain - Votação Transparente na Blockchain
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Este é um sistema de votação descentralizado e transparente que permite votos seguros e imutáveis na blockchain Ethereum.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/devasandeshtantra-8288s-projects/v0-voting-d-app-ui)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/Bu157LQSiME)
+## Tecnologias Utilizadas
 
-## Overview
+- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
+- **Web3**: Wagmi, Viem
+- **Smart Contract**: Solidity (Foundry)
+- **Estilo**: shadcn/ui, Lucide React
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+## Configuração e Execução
 
-## Deployment
+### 1. Instalação de Dependências
 
-Your project is live at:
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
 
-**[https://vercel.com/devasandeshtantra-8288s-projects/v0-voting-d-app-ui](https://vercel.com/devasandeshtantra-8288s-projects/v0-voting-d-app-ui)**
+### 2. Deploy do Smart Contract
 
-## Build your app
+Antes de executar o frontend, você precisa deployar o contrato inteligente:
 
-Continue building your app on:
+```bash
+# Navegue até o diretório dos contratos
+cd voting-contracts
 
-**[https://v0.app/chat/projects/Bu157LQSiME](https://v0.app/chat/projects/Bu157LQSiME)**
+# Compile os contratos
+forge build
 
-## How It Works
+# Deploy na Sepolia (substitua YOUR_PRIVATE_KEY pelo seu)
+forge create src/Voting.sol:Voting --rpc-url sepolia --private-key YOUR_PRIVATE_KEY
+```
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+### 3. Configurar Variáveis de Ambiente
+
+Atualize o arquivo `.env.local` com o endereço do contrato deployado:
+
+```env
+NEXT_PUBLIC_SEPOLIA_RPC=https://sepolia.infura.io/v3/SEU_PROJETO_INFURA
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x... # Endereço do contrato deployado
+```
+
+### 4. Executar o Projeto
+
+```bash
+# No diretório raiz
+npm run dev
+```
+
+Agora você pode acessar o aplicativo em `http://localhost:3000`.
+
+## Funcionalidades
+
+- Conexão com carteira (MetaMask)
+- Visualização de candidatos e propostas
+- Votação segura na blockchain Ethereum
+- Taxa de votação de 0.025 ETH
+- Verificação de elegibilidade de voto
+- Resultados em tempo real
+- Ranking de candidatos
+
+## Estrutura do Projeto
+
+```
+├── app/                   # Páginas Next.js
+├── components/           # Componentes reutilizáveis
+├── hooks/               # Hooks personalizados para Web3
+├── lib/                 # Configurações e utilitários
+├── types/               # Tipos TypeScript
+├── voting-contracts/    # Contratos inteligentes (Foundry)  
+└── README.md
+```
+
+## Como Votar
+
+1. Conecte sua carteira (MetaMask ou outra compatível)
+2. Selecione um candidato
+3. Revise as informações de voto
+4. Confirme a transação (custo de 0.025 ETH + taxas de gás)
+5. Seu voto é registrado permanentemente na blockchain
+
+> **Aviso**: Os votos são irreversíveis e registrados permanentemente na blockchain. Certifique-se de confirmar seu voto com cuidado.

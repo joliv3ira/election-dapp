@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { AlertCircle, CheckCircle2 } from "lucide-react"
+import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react"
 import type { Candidate } from "@/app/page"
 import Image from "next/image"
 
@@ -19,9 +19,10 @@ interface VoteConfirmationModalProps {
   onClose: () => void
   onConfirm: () => void
   candidate: Candidate | null
+  isPending?: boolean
 }
 
-export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate }: VoteConfirmationModalProps) {
+export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate, isPending }: VoteConfirmationModalProps) {
   if (!candidate) return null
 
   return (
@@ -39,7 +40,7 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate }:
             </div>
             <div>
               <h3 className="text-xl font-bold text-foreground">{candidate.name}</h3>
-              <p className="text-sm text-muted-foreground">{candidate.party}</p>
+              <p className="text-sm text-muted-foreground">Candidato #{Number(candidate.id)}</p>
               <Badge className="mt-1 bg-primary/10 text-primary border-primary/20">
                 {candidate.votes} votos atuais
               </Badge>
@@ -72,29 +73,15 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate }:
               </p>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-foreground flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-primary" />
-              Principais propostas:
-            </p>
-            <ul className="space-y-1 pl-6">
-              {candidate.proposals.slice(0, 3).map((proposal, index) => (
-                <li key={index} className="text-xs text-muted-foreground leading-relaxed">
-                  • {proposal}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isPending}>
             Cancelar
           </Button>
-          <Button onClick={onConfirm} className="gap-2">
-            <CheckCircle2 className="w-4 h-4" />
-            Confirmar Voto
+          <Button onClick={onConfirm} className="gap-2" disabled={isPending}>
+            {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isPending ? 'Confirmando...' : 'Confirmar Voto'}
           </Button>
         </DialogFooter>
       </DialogContent>

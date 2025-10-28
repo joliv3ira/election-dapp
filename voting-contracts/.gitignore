@@ -1,0 +1,14 @@
+# Foundry
+cache/
+out/
+broadcast/
+
+# Dotenv file
+.env
+
+# Node modules
+node_modules/
+
+# Build info
+build-info/
+
