@@ -1,17 +1,55 @@
-# VoteChain - Votação Transparente na Blockchain
+# 🗳️ Election DApp
 
-Este é um sistema de votação descentralizado e transparente que permite votos seguros e imutáveis na blockchain Ethereum.
+<div align="center">
 
-## Tecnologias Utilizadas
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript)
+![Ethereum](https://img.shields.io/badge/Ethereum-Blockchain-627EEA?style=for-the-badge&logo=ethereum)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
-- **Web3**: Wagmi, Viem
-- **Smart Contract**: Solidity (Foundry)
-- **Estilo**: shadcn/ui, Lucide React
+**Sistema de votação descentralizado, transparente e seguro na blockchain Ethereum**
 
-## Configuração e Execução
+[Demo](#) · [Documentação](#funcionalidades) · [Contribuir](#contribuindo)
 
-### 1. Instalação de Dependências
+</div>
+
+---
+
+## 📋 Sobre o Projeto
+
+O **Election DApp** é uma aplicação descentralizada para condução de eleições digitais transparentes e imutáveis. Utilizando a tecnologia blockchain Ethereum, o sistema garante:
+
+- 🔒 **Segurança**: Votos criptografados e imutáveis
+- 🌐 **Transparência**: Resultados auditáveis por qualquer pessoa
+- 🚫 **Anti-fraude**: Impossível alterar ou duplicar votos
+- ⚡ **Tempo real**: Resultados atualizados instantaneamente
+
+## 🚀 Tecnologias
+
+| Categoria | Tecnologias |
+|-----------|-------------|
+| **Frontend** | Next.js 16, React 19, TypeScript |
+| **Estilização** | Tailwind CSS 4, shadcn/ui, Lucide Icons |
+| **Web3** | Wagmi 2, Viem 2, TanStack Query |
+| **Smart Contract** | Solidity, Foundry |
+| **Blockchain** | Ethereum (Sepolia Testnet) |
+
+## 📦 Instalação
+
+### Pré-requisitos
+
+- Node.js 18+
+- Carteira Web3 (MetaMask recomendado)
+- ETH na Sepolia Testnet (para testes)
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/joliv3ira/election-dapp.git
+cd election-dapp
+```
+
+### 2. Instale as dependências
 
 ```bash
 npm install
@@ -21,9 +59,24 @@ yarn install
 pnpm install
 ```
 
-### 2. Deploy do Smart Contract
+### 3. Configure as variáveis de ambiente
 
-Antes de executar o frontend, você precisa deployar o contrato inteligente:
+Crie um arquivo `.env.local` na raiz do projeto:
+
+```env
+NEXT_PUBLIC_SEPOLIA_RPC=https://sepolia.infura.io/v3/SEU_PROJETO_INFURA
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x... # Endereço do contrato deployado
+```
+
+### 4. Execute o projeto
+
+```bash
+npm run dev
+```
+
+Acesse [http://localhost:3000](http://localhost:3000) 🎉
+
+## 🔧 Deploy do Smart Contract
 
 ```bash
 # Navegue até o diretório dos contratos
@@ -32,56 +85,72 @@ cd voting-contracts
 # Compile os contratos
 forge build
 
-# Deploy na Sepolia (substitua YOUR_PRIVATE_KEY pelo seu)
-forge create src/Voting.sol:Voting --rpc-url sepolia --private-key YOUR_PRIVATE_KEY
+# Deploy na Sepolia
+forge create src/Voting.sol:Voting \
+  --rpc-url sepolia \
+  --private-key YOUR_PRIVATE_KEY
 ```
 
-### 3. Configurar Variáveis de Ambiente
+## ✨ Funcionalidades
 
-Atualize o arquivo `.env.local` com o endereço do contrato deployado:
+- [x] Conexão com carteira (MetaMask, WalletConnect, etc.)
+- [x] Cadastro e visualização de candidatos
+- [x] Votação segura na blockchain
+- [x] Verificação de elegibilidade do eleitor
+- [x] Resultados em tempo real
+- [x] Ranking de candidatos
+- [x] Histórico de transações
+- [x] Interface responsiva (mobile-first)
 
-```env
-NEXT_PUBLIC_SEPOLIA_RPC=https://sepolia.infura.io/v3/SEU_PROJETO_INFURA
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x... # Endereço do contrato deployado
-```
-
-### 4. Executar o Projeto
-
-```bash
-# No diretório raiz
-npm run dev
-```
-
-Agora você pode acessar o aplicativo em `http://localhost:3000`.
-
-## Funcionalidades
-
-- Conexão com carteira (MetaMask)
-- Visualização de candidatos e propostas
-- Votação segura na blockchain Ethereum
-- Taxa de votação de 0.025 ETH
-- Verificação de elegibilidade de voto
-- Resultados em tempo real
-- Ranking de candidatos
-
-## Estrutura do Projeto
+## 📁 Estrutura do Projeto
 
 ```
-├── app/                   # Páginas Next.js
-├── components/           # Componentes reutilizáveis
-├── hooks/               # Hooks personalizados para Web3
-├── lib/                 # Configurações e utilitários
-├── types/               # Tipos TypeScript
-├── voting-contracts/    # Contratos inteligentes (Foundry)  
+election-dapp/
+├── app/                    # App Router (Next.js 16)
+│   ├── layout.tsx          # Layout principal
+│   └── page.tsx            # Página inicial
+├── components/             # Componentes React
+│   ├── ui/                 # Componentes shadcn/ui
+│   └── ...                 # Componentes do projeto
+├── hooks/                  # Hooks personalizados
+│   └── useVote.ts          # Hook de votação Web3
+├── lib/                    # Configurações e utilitários
+│   ├── wagmi.ts            # Configuração Wagmi
+│   └── utils.ts            # Funções utilitárias
+├── types/                  # Definições TypeScript
+├── voting-contracts/       # Smart Contracts (Foundry)
+│   └── src/Voting.sol      # Contrato de votação
 └── README.md
 ```
 
-## Como Votar
+## 🗳️ Como Votar
 
-1. Conecte sua carteira (MetaMask ou outra compatível)
-2. Selecione um candidato
-3. Revise as informações de voto
-4. Confirme a transação (custo de 0.025 ETH + taxas de gás)
-5. Seu voto é registrado permanentemente na blockchain
+1. **Conecte sua carteira** - Clique em "Conectar Carteira" e autorize no MetaMask
+2. **Escolha um candidato** - Navegue pela lista e selecione seu candidato
+3. **Confirme seu voto** - Revise as informações e confirme
+4. **Aprove a transação** - Confirme no MetaMask (0.025 ETH + gas)
+5. **Pronto!** - Seu voto foi registrado permanentemente na blockchain
 
-> **Aviso**: Os votos são irreversíveis e registrados permanentemente na blockchain. Certifique-se de confirmar seu voto com cuidado.
+> ⚠️ **Importante**: Os votos são irreversíveis e registrados permanentemente na blockchain. Vote com responsabilidade!
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Sinta-se à vontade para:
+
+1. Fazer um Fork do projeto
+2. Criar uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Add: nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abrir um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+<div align="center">
+
+Feito com ❤️ por [Jorge Oliveira](https://github.com/joliv3ira)
+
+</div>
