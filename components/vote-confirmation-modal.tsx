@@ -29,8 +29,8 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate, i
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Confirmar Voto</DialogTitle>
-          <DialogDescription>Revise os detalhes antes de confirmar sua votação</DialogDescription>
+          <DialogTitle className="text-2xl">Confirm Vote</DialogTitle>
+          <DialogDescription>Review the details before confirming your vote</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
@@ -40,20 +40,20 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate, i
             </div>
             <div>
               <h3 className="text-xl font-bold text-foreground">{candidate.name}</h3>
-              <p className="text-sm text-muted-foreground">Candidato #{Number(candidate.id)}</p>
+              <p className="text-sm text-muted-foreground">Candidate #{Number(candidate.id)}</p>
               <Badge className="mt-1 bg-primary/10 text-primary border-primary/20">
-                {candidate.votes} votos atuais
+                {candidate.votes} current votes
               </Badge>
             </div>
           </div>
 
           <div className="space-y-3 p-4 rounded-lg bg-muted/50 border border-border">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Valor da votação</span>
+              <span className="text-sm text-muted-foreground">Vote cost</span>
               <span className="font-bold text-foreground">0.025 ETH</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Taxa de gas (estimada)</span>
+              <span className="text-sm text-muted-foreground">Gas fee (estimated)</span>
               <span className="font-mono text-sm text-foreground">~0.002 ETH</span>
             </div>
             <div className="h-px bg-border" />
@@ -66,10 +66,10 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate, i
           <div className="flex items-start gap-3 p-4 rounded-lg bg-primary/5 border border-primary/20">
             <AlertCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">Atenção</p>
+              <p className="text-sm font-medium text-foreground">Warning</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Esta ação é irreversível. Seu voto será registrado permanentemente na blockchain e não poderá ser
-                alterado.
+                This action is irreversible. Your vote will be permanently recorded on the blockchain and cannot be
+                changed.
               </p>
             </div>
           </div>
@@ -77,11 +77,11 @@ export function VoteConfirmationModal({ isOpen, onClose, onConfirm, candidate, i
 
         <DialogFooter className="gap-2 sm:gap-0">
           <Button variant="outline" onClick={onClose} disabled={isPending}>
-            Cancelar
+            Cancel
           </Button>
           <Button onClick={onConfirm} className="gap-2" disabled={isPending}>
             {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-            {isPending ? 'Confirmando...' : 'Confirmar Voto'}
+            {isPending ? 'Confirming...' : 'Confirm Vote'}
           </Button>
         </DialogFooter>
       </DialogContent>

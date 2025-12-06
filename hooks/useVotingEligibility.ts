@@ -17,16 +17,16 @@ export function useVotingEligibility(userAddress?: string) {
 
     if (!isConnected) {
       status = 'not_connected';
-      message = 'Conecte sua carteira para votar';
+      message = 'Connect your wallet to vote';
     } else if (!votingActive) {
       status = 'voting_closed';
-      message = 'A votação está fechada no momento';
+      message = 'Voting is currently closed';
     } else if (hasVoted) {
       status = 'already_voted';
-      message = `Você já votou no candidato ${votedFor ? Number(votedFor) : 'desconhecido'}`;
+      message = `You already voted for candidate ${votedFor ? Number(votedFor) : 'unknown'}`;
     } else {
       status = 'can_vote';
-      message = 'Você pode votar';
+      message = 'You can vote';
     }
 
     return { canVote, status, message, votedFor: votedFor ? Number(votedFor) : null };

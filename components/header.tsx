@@ -45,7 +45,7 @@ export function Header({ isConnected, walletAddress, onConnect, onDisconnect, is
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">VoteChain</h1>
-              <p className="text-xs text-muted-foreground">Votação Transparente</p>
+              <p className="text-xs text-muted-foreground">Transparent Voting</p>
             </div>
           </div>
 
@@ -57,7 +57,7 @@ export function Header({ isConnected, walletAddress, onConnect, onDisconnect, is
               className="hidden sm:flex items-center gap-2"
             >
               <ExternalLink className="w-4 h-4" />
-              <span className="hidden md:inline">Ver Contrato</span>
+              <span className="hidden md:inline">View Contract</span>
             </Button>
 
             {isConnected ? (
@@ -67,7 +67,7 @@ export function Header({ isConnected, walletAddress, onConnect, onDisconnect, is
                   <span className="text-sm font-mono text-foreground hidden sm:inline">
                     {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
                   </span>
-                  <span className="text-sm font-mono text-foreground sm:hidden">Conectado</span>
+                  <span className="text-sm font-mono text-foreground sm:hidden">Connected</span>
                 </div>
                 <Button 
                   variant="outline" 
@@ -76,13 +76,13 @@ export function Header({ isConnected, walletAddress, onConnect, onDisconnect, is
                   className="gap-2"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">Desconectar</span>
+                  <span className="hidden sm:inline">Disconnect</span>
                 </Button>
               </div>
             ) : (
               <Button onClick={onConnect} className="gap-2" disabled={isConnecting}>
                 <Wallet className="w-4 h-4" />
-                {isConnecting ? 'Conectando...' : 'Conectar Carteira'}
+                {isConnecting ? 'Connecting...' : 'Connect Wallet'}
               </Button>
             )}
           </div>

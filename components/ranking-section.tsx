@@ -41,7 +41,7 @@ export function RankingSection({ candidates }: RankingSectionProps) {
     <section className="space-y-6">
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold text-foreground">Ranking</h2>
-        <p className="text-muted-foreground">Acompanhe a classificação em tempo real</p>
+        <p className="text-muted-foreground">Follow the real-time standings</p>
       </div>
 
       <div className="space-y-4">
@@ -81,13 +81,13 @@ export function RankingSection({ candidates }: RankingSectionProps) {
                       <p className="font-bold text-foreground text-lg">
                         {candidate.formattedVoteCount || voteCount}
                       </p>
-                      <p className="text-xs text-muted-foreground">votos</p>
+                      <p className="text-xs text-muted-foreground">votes</p>
                     </div>
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Percentual</span>
+                      <span className="text-muted-foreground">Percentage</span>
                       <Badge variant="secondary">{percentage.toFixed(1)}%</Badge>
                     </div>
                     <div className="w-full h-2 bg-muted rounded-full overflow-hidden">

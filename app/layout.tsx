@@ -10,8 +10,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "VoteChain - Votação Transparente na Blockchain",
-  description: "Plataforma de votação descentralizada e transparente",
+  title: "VoteChain - Transparent Blockchain Voting",
+  description: "Decentralized and transparent voting platform",
   generator: "v0.app",
 }
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="en">
       <body className={`font-sans antialiased`}>
         <Providers>
           {children}

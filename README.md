@@ -7,150 +7,150 @@
 ![Ethereum](https://img.shields.io/badge/Ethereum-Blockchain-627EEA?style=for-the-badge&logo=ethereum)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**Sistema de votação descentralizado, transparente e seguro na blockchain Ethereum**
+**Decentralized, transparent, and secure voting system on the Ethereum blockchain**
 
-[Demo](#) · [Documentação](#funcionalidades) · [Contribuir](#contribuindo)
+[Demo](#) · [Documentation](#features) · [Contributing](#contributing)
 
 </div>
 
 ---
 
-## 📋 Sobre o Projeto
+## 📋 About the Project
 
-O **Election DApp** é uma aplicação descentralizada para condução de eleições digitais transparentes e imutáveis. Utilizando a tecnologia blockchain Ethereum, o sistema garante:
+**Election DApp** is a decentralized application for conducting transparent and immutable digital elections. Using Ethereum blockchain technology, the system ensures:
 
-- 🔒 **Segurança**: Votos criptografados e imutáveis
-- 🌐 **Transparência**: Resultados auditáveis por qualquer pessoa
-- 🚫 **Anti-fraude**: Impossível alterar ou duplicar votos
-- ⚡ **Tempo real**: Resultados atualizados instantaneamente
+- 🔒 **Security**: Encrypted and immutable votes
+- 🌐 **Transparency**: Results auditable by anyone
+- 🚫 **Anti-fraud**: Impossible to alter or duplicate votes
+- ⚡ **Real-time**: Instantly updated results
 
-## 🚀 Tecnologias
+## 🚀 Technologies
 
-| Categoria | Tecnologias |
-|-----------|-------------|
+| Category | Technologies |
+|----------|-------------|
 | **Frontend** | Next.js 16, React 19, TypeScript |
-| **Estilização** | Tailwind CSS 4, shadcn/ui, Lucide Icons |
+| **Styling** | Tailwind CSS 4, shadcn/ui, Lucide Icons |
 | **Web3** | Wagmi 2, Viem 2, TanStack Query |
 | **Smart Contract** | Solidity, Foundry |
 | **Blockchain** | Ethereum (Sepolia Testnet) |
 
-## 📦 Instalação
+## 📦 Installation
 
-### Pré-requisitos
+### Prerequisites
 
 - Node.js 18+
-- Carteira Web3 (MetaMask recomendado)
-- ETH na Sepolia Testnet (para testes)
+- Web3 Wallet (MetaMask recommended)
+- ETH on Sepolia Testnet (for testing)
 
-### 1. Clone o repositório
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/joliv3ira/election-dapp.git
 cd election-dapp
 ```
 
-### 2. Instale as dependências
+### 2. Install dependencies
 
 ```bash
 npm install
-# ou
+# or
 yarn install
-# ou
+# or
 pnpm install
 ```
 
-### 3. Configure as variáveis de ambiente
+### 3. Configure environment variables
 
-Crie um arquivo `.env.local` na raiz do projeto:
+Create a `.env.local` file in the project root:
 
 ```env
-NEXT_PUBLIC_SEPOLIA_RPC=https://sepolia.infura.io/v3/SEU_PROJETO_INFURA
-NEXT_PUBLIC_CONTRACT_ADDRESS=0x... # Endereço do contrato deployado
+NEXT_PUBLIC_SEPOLIA_RPC=https://sepolia.infura.io/v3/YOUR_INFURA_PROJECT
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x... # Deployed contract address
 ```
 
-### 4. Execute o projeto
+### 4. Run the project
 
 ```bash
 npm run dev
 ```
 
-Acesse [http://localhost:3000](http://localhost:3000) 🎉
+Access [http://localhost:3000](http://localhost:3000) 🎉
 
-## 🔧 Deploy do Smart Contract
+## 🔧 Smart Contract Deployment
 
 ```bash
-# Navegue até o diretório dos contratos
+# Navigate to contracts directory
 cd voting-contracts
 
-# Compile os contratos
+# Build contracts
 forge build
 
-# Deploy na Sepolia
+# Deploy to Sepolia
 forge create src/Voting.sol:Voting \
   --rpc-url sepolia \
   --private-key YOUR_PRIVATE_KEY
 ```
 
-## ✨ Funcionalidades
+## ✨ Features
 
-- [x] Conexão com carteira (MetaMask, WalletConnect, etc.)
-- [x] Cadastro e visualização de candidatos
-- [x] Votação segura na blockchain
-- [x] Verificação de elegibilidade do eleitor
-- [x] Resultados em tempo real
-- [x] Ranking de candidatos
-- [x] Histórico de transações
-- [x] Interface responsiva (mobile-first)
+- [x] Wallet connection (MetaMask, WalletConnect, etc.)
+- [x] Candidate registration and viewing
+- [x] Secure blockchain voting
+- [x] Voter eligibility verification
+- [x] Real-time results
+- [x] Candidate ranking
+- [x] Transaction history
+- [x] Responsive interface (mobile-first)
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 election-dapp/
 ├── app/                    # App Router (Next.js 16)
-│   ├── layout.tsx          # Layout principal
-│   └── page.tsx            # Página inicial
-├── components/             # Componentes React
-│   ├── ui/                 # Componentes shadcn/ui
-│   └── ...                 # Componentes do projeto
-├── hooks/                  # Hooks personalizados
-│   └── useVote.ts          # Hook de votação Web3
-├── lib/                    # Configurações e utilitários
-│   ├── wagmi.ts            # Configuração Wagmi
-│   └── utils.ts            # Funções utilitárias
-├── types/                  # Definições TypeScript
+│   ├── layout.tsx          # Main layout
+│   └── page.tsx            # Home page
+├── components/             # React components
+│   ├── ui/                 # shadcn/ui components
+│   └── ...                 # Project components
+├── hooks/                  # Custom hooks
+│   └── useVote.ts          # Web3 voting hook
+├── lib/                    # Configurations and utilities
+│   ├── wagmi.ts            # Wagmi configuration
+│   └── utils.ts            # Utility functions
+├── types/                  # TypeScript definitions
 ├── voting-contracts/       # Smart Contracts (Foundry)
-│   └── src/Voting.sol      # Contrato de votação
+│   └── src/Voting.sol      # Voting contract
 └── README.md
 ```
 
-## 🗳️ Como Votar
+## 🗳️ How to Vote
 
-1. **Conecte sua carteira** - Clique em "Conectar Carteira" e autorize no MetaMask
-2. **Escolha um candidato** - Navegue pela lista e selecione seu candidato
-3. **Confirme seu voto** - Revise as informações e confirme
-4. **Aprove a transação** - Confirme no MetaMask (0.025 ETH + gas)
-5. **Pronto!** - Seu voto foi registrado permanentemente na blockchain
+1. **Connect your wallet** - Click "Connect Wallet" and authorize in MetaMask
+2. **Choose a candidate** - Browse the list and select your candidate
+3. **Confirm your vote** - Review the information and confirm
+4. **Approve the transaction** - Confirm in MetaMask (0.025 ETH + gas)
+5. **Done!** - Your vote has been permanently recorded on the blockchain
 
-> ⚠️ **Importante**: Os votos são irreversíveis e registrados permanentemente na blockchain. Vote com responsabilidade!
+> ⚠️ **Important**: Votes are irreversible and permanently recorded on the blockchain. Vote responsibly!
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
+Contributions are welcome! Feel free to:
 
-1. Fazer um Fork do projeto
-2. Criar uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -m 'Add: nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abrir um Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -m 'Add: new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
 
-## 📄 Licença
+## 📄 License
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+This project is under the MIT license. See the [LICENSE](LICENSE) file for more details.
 
 ---
 
 <div align="center">
 
-Feito com ❤️ por [Jorge Oliveira](https://github.com/joliv3ira)
+Made with ❤️ by [Jorge Oliveira](https://github.com/joliv3ira)
 
 </div>

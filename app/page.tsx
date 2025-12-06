@@ -35,34 +35,34 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasShownConnectionToast, setHasShownConnectionToast] = useState(false);
 
-  // Mostrar mensagem quando conectar com sucesso
+  // Show message when connected successfully
   useEffect(() => {
     if (isConnected && address && !hasShownConnectionToast) {
-      toast.success("Carteira conectada com sucesso!");
+      toast.success("Wallet connected successfully!");
       setHasShownConnectionToast(true);
     }
     
-    // Reset quando desconectar
+    // Reset when disconnected
     if (!isConnected && hasShownConnectionToast) {
       setHasShownConnectionToast(false);
     }
   }, [isConnected, address, hasShownConnectionToast]);
 
   const connectWallet = () => {
-    // Verifica se MetaMask está instalado
+    // Check if MetaMask is installed
     if (typeof window.ethereum === 'undefined') {
-      toast.error("MetaMask não detectado. Por favor, instale o MetaMask!");
+      toast.error("MetaMask not detected. Please install MetaMask!");
       return;
     }
 
     connect({ connector: injected() });
   };
 
-  // Tratar erros de conexão
+  // Handle connection errors
   useEffect(() => {
     if (connectError) {
-      console.error("Erro de conexão:", connectError);
-      toast.error("Erro ao conectar carteira. Verifique se o MetaMask está desbloqueado.");
+      console.error("Connection error:", connectError);
+      toast.error("Error connecting wallet. Make sure MetaMask is unlocked.");
     }
   }, [connectError]);
 
@@ -72,7 +72,7 @@ export default function Home() {
 
   const handleVoteClick = (candidate: ContractCandidate) => {
     if (!isConnected) {
-      toast.error("Conecte sua carteira para votar");
+      toast.error("Connect your wallet to vote");
       return;
     }
     
@@ -89,12 +89,12 @@ export default function Home() {
     if (!selectedCandidate) return;
 
     try {
-      toast.loading("Processando transação na blockchain...", { id: "vote-tx" });
+      toast.loading("Processing transaction on blockchain...", { id: "vote-tx" });
       vote(Number(selectedCandidate.id));
       setIsModalOpen(false);
       setSelectedCandidate(null);
     } catch (error) {
-      toast.error("Erro ao processar voto", { id: "vote-tx" });
+      toast.error("Error processing vote", { id: "vote-tx" });
       console.error(error);
     }
   };
@@ -110,13 +110,13 @@ export default function Home() {
   // Update UI when transaction is confirmed
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Voto confirmado na blockchain!", { id: "vote-tx" });
-      // Refetch após confirmação
+      toast.success("Vote confirmed on blockchain!", { id: "vote-tx" });
+      // Refetch after confirmation
       refetchCandidates();
       refetchStats();
       refetchFormatted();
     } else if (isConfirming) {
-      toast.loading("Confirmando transação na blockchain...", { id: "vote-tx" });
+      toast.loading("Confirming transaction on blockchain...", { id: "vote-tx" });
     }
   }, [isSuccess, isConfirming, refetchCandidates, refetchStats, refetchFormatted]);
 
@@ -125,7 +125,7 @@ export default function Home() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-          <p className="text-lg">Carregando dados da blockchain...</p>
+          <p className="text-lg">Loading data from blockchain...</p>
         </div>
       </div>
     );

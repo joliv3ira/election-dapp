@@ -1,75 +1,75 @@
-# 🚀 Guia Completo de Deploy - Sistema de Votação Descentralizada
+# 🚀 Complete Deployment Guide - Decentralized Voting System
 
-## 📋 Problema Identificado
+## 📋 Identified Problem
 
-O erro que você estava recebendo:
+The error you were receiving:
 ```
 error: a value is required for '--fork-url <URL>' but none was supplied
 ```
 
-**Causa**: As variáveis de ambiente não estavam configuradas no arquivo `.env`.
+**Cause**: Environment variables were not configured in the `.env` file.
 
-## ✅ Solução Completa
+## ✅ Complete Solution
 
-### 1️⃣ Configurar Variáveis de Ambiente para o Contrato
+### 1️⃣ Configure Environment Variables for the Contract
 
-**No diretório `voting-contracts`, crie um arquivo `.env`:**
+**In the `voting-contracts` directory, create a `.env` file:**
 
 ```env
-SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/SUA_API_KEY_AQUI
-PRIVATE_KEY=sua_chave_privada_sem_0x
-ETHERSCAN_API_KEY=sua_etherscan_api_key
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY_HERE
+PRIVATE_KEY=your_private_key_without_0x
+ETHERSCAN_API_KEY=your_etherscan_api_key
 ```
 
-> 📝 Use o arquivo `env-template.txt` como referência!
+> 📝 Use the `env-template.txt` file as reference!
 
-### 2️⃣ Obter Credenciais Necessárias
+### 2️⃣ Obtain Required Credentials
 
-#### 🔗 RPC URL da Sepolia (Alchemy - Recomendado)
+#### 🔗 Sepolia RPC URL (Alchemy - Recommended)
 
-1. Acesse: https://www.alchemy.com/
-2. Crie uma conta gratuita
-3. Clique em "Create App"
+1. Go to: https://www.alchemy.com/
+2. Create a free account
+3. Click "Create App"
 4. Configure:
    - **Name**: Voting DApp
    - **Chain**: Ethereum
    - **Network**: Sepolia
-5. Copie a **HTTP URL**
-6. Cole no `.env` em `SEPOLIA_RPC_URL`
+5. Copy the **HTTP URL**
+6. Paste in `.env` under `SEPOLIA_RPC_URL`
 
-#### 🔑 Chave Privada (MetaMask)
+#### 🔑 Private Key (MetaMask)
 
-⚠️ **IMPORTANTE**: Use uma carteira de teste!
+⚠️ **IMPORTANT**: Use a test wallet!
 
-1. Abra o MetaMask
-2. Clique nos três pontos → "Account Details"
-3. Clique em "Show Private Key"
-4. Digite sua senha
-5. Copie a chave **SEM o prefixo `0x`**
-6. Cole no `.env` em `PRIVATE_KEY`
+1. Open MetaMask
+2. Click the three dots → "Account Details"
+3. Click "Show Private Key"
+4. Enter your password
+5. Copy the key **WITHOUT the `0x` prefix**
+6. Paste in `.env` under `PRIVATE_KEY`
 
-#### 💰 ETH de Teste (Sepolia Faucet)
+#### 💰 Test ETH (Sepolia Faucet)
 
-1. Acesse: https://sepoliafaucet.com/
-2. Cole o endereço da sua carteira
-3. Solicite ETH de teste (mínimo 0.1 ETH)
-4. Aguarde alguns minutos
+1. Go to: https://sepoliafaucet.com/
+2. Paste your wallet address
+3. Request test ETH (minimum 0.1 ETH)
+4. Wait a few minutes
 
-### 3️⃣ Executar Deploy do Contrato
+### 3️⃣ Execute Contract Deployment
 
-**Opção A - Script PowerShell (Recomendado):**
+**Option A - PowerShell Script (Recommended):**
 
 ```powershell
 cd voting-contracts
 .\deploy.ps1
 ```
 
-**Opção B - Comando Manual (PowerShell):**
+**Option B - Manual Command (PowerShell):**
 
 ```powershell
 cd voting-contracts
 
-# Carregar variáveis de ambiente
+# Load environment variables
 Get-Content .env | ForEach-Object {
     if ($_ -match '^([^=]+)=(.*)$' -and -not $_.StartsWith('#')) {
         [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
@@ -80,7 +80,7 @@ Get-Content .env | ForEach-Object {
 forge script script/Deploy.s.sol:DeployVoting --rpc-url $env:SEPOLIA_RPC_URL --broadcast -vvv
 ```
 
-**Opção C - Bash/Linux/Mac:**
+**Option C - Bash/Linux/Mac:**
 
 ```bash
 cd voting-contracts
@@ -88,9 +88,9 @@ source .env
 forge script script/Deploy.s.sol:DeployVoting --rpc-url $SEPOLIA_RPC_URL --broadcast -vvv
 ```
 
-### 4️⃣ Anotar o Endereço do Contrato
+### 4️⃣ Note the Contract Address
 
-Após o deploy, você verá algo como:
+After deployment, you will see something like:
 
 ```
 == Logs ==
@@ -99,22 +99,22 @@ Após o deploy, você verá algo como:
 Transaction Hash: 0xabcdef123456...
 ```
 
-**⚠️ COPIE O ENDEREÇO DO CONTRATO!**
+**⚠️ COPY THE CONTRACT ADDRESS!**
 
-### 5️⃣ Atualizar Configuração do Frontend
+### 5️⃣ Update Frontend Configuration
 
-Edite o arquivo `lib/contract-config.ts`:
+Edit the file `lib/contract-config.ts`:
 
 ```typescript
 export const contractConfig = {
-  address: "0xSEU_ENDERECO_DO_CONTRATO_DEPLOYADO_AQUI" as `0x${string}`,
+  address: "0xYOUR_DEPLOYED_CONTRACT_ADDRESS_HERE" as `0x${string}`,
   abi: abi
 } as const;
 ```
 
-### 6️⃣ Copiar ABI Atualizado (Opcional)
+### 6️⃣ Copy Updated ABI (Optional)
 
-Se você modificou o contrato, atualize o ABI:
+If you modified the contract, update the ABI:
 
 **PowerShell:**
 ```powershell
@@ -128,109 +128,109 @@ cd voting-contracts
 cat out/Voting.sol/Voting.json | jq '.abi' > ../abi.json
 ```
 
-### 7️⃣ Configurar Variáveis de Ambiente do Frontend (Opcional)
+### 7️⃣ Configure Frontend Environment Variables (Optional)
 
-Crie um arquivo `.env.local` na **raiz do projeto**:
+Create a `.env.local` file in the **project root**:
 
 ```env
-# URL RPC para o frontend (pode usar a mesma do deploy)
-NEXT_PUBLIC_SEPOLIA_RPC=https://eth-sepolia.g.alchemy.com/v2/SUA_API_KEY_AQUI
+# RPC URL for frontend (can use the same as deployment)
+NEXT_PUBLIC_SEPOLIA_RPC=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY_HERE
 
-# Endereço do contrato deployado (opcional, já está no contract-config.ts)
-NEXT_PUBLIC_CONTRACT_ADDRESS=0xSEU_ENDERECO_DO_CONTRATO
+# Deployed contract address (optional, already in contract-config.ts)
+NEXT_PUBLIC_CONTRACT_ADDRESS=0xYOUR_CONTRACT_ADDRESS
 ```
 
-### 8️⃣ Adicionar Candidatos e Ativar Votação
+### 8️⃣ Add Candidates and Activate Voting
 
-**Usando Foundry Cast:**
+**Using Foundry Cast:**
 
 ```bash
-# Definir variáveis (PowerShell)
-$CONTRACT_ADDRESS = "0xSEU_ENDERECO_DO_CONTRATO"
-$RPC_URL = "sua_rpc_url"
-$PRIVATE_KEY = "sua_private_key"
+# Set variables (PowerShell)
+$CONTRACT_ADDRESS = "0xYOUR_CONTRACT_ADDRESS"
+$RPC_URL = "your_rpc_url"
+$PRIVATE_KEY = "your_private_key"
 
-# Adicionar candidato 1
-cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "João Silva" "Candidato com foco em educação e tecnologia" "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+# Add candidate 1
+cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "John Smith" "Candidate focused on education and technology" "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 
-# Adicionar candidato 2
-cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "Maria Santos" "Candidata com foco em saúde e bem-estar" "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+# Add candidate 2
+cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "Mary Johnson" "Candidate focused on health and wellness" "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 
-# Adicionar candidato 3
-cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "Pedro Costa" "Candidato com foco em infraestrutura" "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
+# Add candidate 3
+cast send $CONTRACT_ADDRESS "addCandidate(string,string,string)" "Peter Williams" "Candidate focused on infrastructure" "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400" --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 
-# Ativar votação
+# Activate voting
 cast send $CONTRACT_ADDRESS "setVotingActive(bool)" true --rpc-url $RPC_URL --private-key $PRIVATE_KEY
 ```
 
-### 9️⃣ Testar a Aplicação
+### 9️⃣ Test the Application
 
 ```bash
-# Voltar para raiz do projeto
+# Go back to project root
 cd ..
 
-# Instalar dependências (se ainda não fez)
+# Install dependencies (if not done yet)
 npm install
 
-# Executar em desenvolvimento
+# Run in development
 npm run dev
 ```
 
-Abra http://localhost:3000 e conecte sua carteira!
+Open http://localhost:3000 and connect your wallet!
 
-## 📊 Estrutura de Arquivos Criados
+## 📊 Created File Structure
 
 ```
-votacao-descentralizada/
+election-dapp/
 ├── voting-contracts/
-│   ├── .env                    # ⚠️ Suas credenciais (não fazer commit!)
-│   ├── .gitignore              # Ignora .env e arquivos de build
-│   ├── env-template.txt        # Template para .env
-│   ├── deploy.ps1              # Script de deploy para PowerShell
-│   ├── SETUP.md                # Guia de configuração detalhado
-│   ├── README.md               # Documentação do contrato
-│   ├── src/Voting.sol          # Contrato inteligente
-│   ├── script/Deploy.s.sol     # Script de deploy
-│   └── test/Voting.t.sol       # Testes do contrato
+│   ├── .env                    # ⚠️ Your credentials (do not commit!)
+│   ├── .gitignore              # Ignores .env and build files
+│   ├── env-template.txt        # Template for .env
+│   ├── deploy.ps1              # PowerShell deployment script
+│   ├── SETUP.md                # Detailed setup guide
+│   ├── README.md               # Contract documentation
+│   ├── src/Voting.sol          # Smart contract
+│   ├── script/Deploy.s.sol     # Deployment script
+│   └── test/Voting.t.sol       # Contract tests
 ├── lib/
-│   ├── contract-config.ts      # ⚠️ Atualizar com endereço após deploy!
-│   └── config.ts               # Configuração Wagmi
-├── .env.local                  # ⚠️ Variáveis do frontend (opcional)
-└── DEPLOY-GUIDE.md             # Este arquivo
+│   ├── contract-config.ts      # ⚠️ Update with address after deployment!
+│   └── config.ts               # Wagmi configuration
+├── .env.local                  # ⚠️ Frontend variables (optional)
+└── DEPLOY-GUIDE.md             # This file
 ```
 
-## 🔍 Verificar Deploy no Etherscan
+## 🔍 Verify Deployment on Etherscan
 
-Acesse: https://sepolia.etherscan.io/address/SEU_ENDERECO_DO_CONTRATO
+Go to: https://sepolia.etherscan.io/address/YOUR_CONTRACT_ADDRESS
 
-Você poderá ver:
-- ✅ Transações do contrato
-- ✅ Código do contrato
-- ✅ Eventos emitidos
-- ✅ Saldo do contrato
+You will be able to see:
+- ✅ Contract transactions
+- ✅ Contract code
+- ✅ Emitted events
+- ✅ Contract balance
 
 ## 🐛 Troubleshooting
 
-### Erro: "insufficient funds"
-**Solução**: Obtenha mais ETH no faucet da Sepolia
+### Error: "insufficient funds"
+**Solution**: Get more ETH from Sepolia faucet
 
-### Erro: "nonce too low"
-**Solução**: Aguarde transação anterior ou reset do MetaMask (Settings → Advanced → Clear Activity Tab Data)
+### Error: "nonce too low"
+**Solution**: Wait for previous transaction or reset MetaMask (Settings → Advanced → Clear Activity Tab Data)
 
-### Erro: "execution reverted"
-**Solução**: Verifique se:
-- A votação está ativa (`setVotingActive(true)`)
-- O candidato existe
-- Você não votou antes
-- Está enviando exatamente 0.025 ETH
+### Error: "execution reverted"
+**Solution**: Check if:
+- Voting is active (`setVotingActive(true)`)
+- Candidate exists
+- You haven't voted before
+- You're sending exactly 0.025 ETH
 
-### Erro: variáveis de ambiente não carregadas
-**Solução (PowerShell)**:
+### Error: environment variables not loaded
+**Solution (PowerShell)**:
 ```powershell
-# Verificar se carregou
+# Check if loaded
 echo $env:SEPOLIA_RPC_URL
 
-# Se não mostrou nada, carregue manualmente:
+# If nothing shows, load manually:
 Get-Content .env | ForEach-Object {
     if ($_ -match '^([^=]+)=(.*)$' -and -not $_.StartsWith('#')) {
         [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2], 'Process')
@@ -238,51 +238,50 @@ Get-Content .env | ForEach-Object {
 }
 ```
 
-## 🔐 Segurança
+## 🔐 Security
 
-- ✅ **NUNCA** faça commit do arquivo `.env`
-- ✅ **SEMPRE** use uma carteira de teste
-- ✅ **VERIFIQUE** o endereço do contrato antes de interagir
-- ✅ **GUARDE** a chave privada em local seguro
-- ✅ **REVOGUE** acesso de apps que não usa mais
+- ✅ **NEVER** commit the `.env` file
+- ✅ **ALWAYS** use a test wallet
+- ✅ **VERIFY** the contract address before interacting
+- ✅ **STORE** the private key in a safe place
+- ✅ **REVOKE** access from apps you no longer use
 
-## 🎯 Próximos Passos
+## 🎯 Next Steps
 
-1. ✅ Deploy do contrato na Sepolia
-2. ✅ Adicionar candidatos
-3. ✅ Ativar votação
-4. ✅ Testar votação com diferentes carteiras
-5. 🚀 Deploy do frontend na Vercel (opcional)
-6. 🎨 Personalizar interface (opcional)
+1. ✅ Deploy contract to Sepolia
+2. ✅ Add candidates
+3. ✅ Activate voting
+4. ✅ Test voting with different wallets
+5. 🚀 Deploy frontend to Vercel (optional)
+6. 🎨 Customize interface (optional)
 
-## 📚 Recursos Adicionais
+## 📚 Additional Resources
 
 - [Foundry Book](https://book.getfoundry.sh/)
 - [Wagmi Documentation](https://wagmi.sh/)
 - [Sepolia Testnet](https://sepolia.etherscan.io/)
 - [Alchemy](https://www.alchemy.com/)
 - [Infura](https://infura.io/)
-- [Repositório de Referência](https://github.com/nrxschool/flashbootcamp04)
+- [Reference Repository](https://github.com/nrxschool/flashbootcamp04)
 
 ---
 
-## ✨ Resumo Rápido
+## ✨ Quick Summary
 
 ```powershell
-# 1. Criar .env em voting-contracts/
-# 2. Preencher SEPOLIA_RPC_URL e PRIVATE_KEY
-# 3. Executar deploy
+# 1. Create .env in voting-contracts/
+# 2. Fill in SEPOLIA_RPC_URL and PRIVATE_KEY
+# 3. Execute deployment
 cd voting-contracts
 .\deploy.ps1
 
-# 4. Copiar endereço do contrato
-# 5. Atualizar lib/contract-config.ts
-# 6. Adicionar candidatos via cast
-# 7. Ativar votação
-# 8. Testar aplicação
+# 4. Copy contract address
+# 5. Update lib/contract-config.ts
+# 6. Add candidates via cast
+# 7. Activate voting
+# 8. Test application
 cd ..
 npm run dev
 ```
 
-**Pronto! Sua DApp de votação está no ar! 🎉**
-
+**Done! Your voting DApp is live! 🎉**
